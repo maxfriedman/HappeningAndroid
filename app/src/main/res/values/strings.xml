@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Happening</string>
+    <string name="action_settings">Settings</string>
+    <string name="facebook_app_id">670930332992069</string>
+    <string name="picker_picker_done_button_text">Done</string>
+    <string name="choose_friends">Choose Friends</string>
+    <string name="exception">Exception: %1$s</string>
+    <string name="error_dialog_title">Something Went Wrong</string>
+    <string name="error_dialog_button_text">OK</string>
+    <string name="error_dialog_default_text">No response from server.</string>
+    <string name="login_intro">Check out your Facebook profile by logging in with the button below!</string>
+    <string name="gender">Gender</string>
+    <string name="email">Email</string>
+    <string name="city_prompt">Select your city</string>
+    <string name="mapsApiKey">AIzaSyBt24yuyu_SpdLg9YxyFhDt-bXCT-yZr6A</string>
+    
+    <string-array name="cities">
+        <item>Washington,DC</item>
+        <item>Boston,MA</item>
+        <item>Nashville,TN</item>
+        <item>Philadelphia,PA</item>
+        <item>San Francisco,CA</item>
+    </string-array>
+    <string-array name="categories">
+        <item>Most popular</item>
+        <item>Best Deals</item>
+        <item>Sports</item>
+        <item>Bars and Clubs</item>
+        <item>Concerts and Shows</item>
+    </string-array>
+
+</resources>

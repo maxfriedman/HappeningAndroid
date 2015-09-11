@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_gravity="center"
+    android:layout_width="310dp"
+    android:layout_height="400dp"
+    android:background="@drawable/bg_selector"
+    android:layout_alignParentTop="@+id/picture"
+             android:clickable="true">
+
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_gravity="center_horizontal"
+                  android:orientation="vertical"
+
+        >
+        <FrameLayout android:layout_width="match_parent"
+                     android:layout_height="175dp" android:layout_weight="0"
+                     android:layout_gravity="center_horizontal"
+                     android:foregroundGravity="center_horizontal"
+                     android:id="@+id/photoholder"
+                     android:layout_margin="3dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="175dp"
+                android:layout_gravity="top"
+                android:id="@+id/picture"
+                android:scaleType="fitXY"/>
+           <!-- <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/actionbar_gradient_dark" />
+-->
+
+            <TextView
+                android:id="@+id/helloText"
+                android:textSize="30sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:layout_gravity="bottom|center_horizontal"
+                android:textColor = "@android:color/white"
+                />
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/hashTag"
+                      android:layout_gravity="top"
+                      android:layout_marginLeft="10dp"
+                      android:layout_marginTop="10dp"
+                      android:textColor="@android:color/white"
+                />
+            <FrameLayout android:layout_width="match_parent"
+                         android:layout_height="40dp"
+                         android:layout_gravity="bottom|center_horizontal"
+                >
+
+                <View
+                    android:id="@+id/item_swipe_left_indicator"
+                    android:alpha="0"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="#A5F" android:layout_gravity="bottom|center_horizontal"/>
+
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:textColor="@android:color/white"
+                          android:textSize="20sp"
+                          android:id="@+id/likeornot"
+                          android:text=""
+                          android:layout_gravity="bottom|center_horizontal"/>
+                <View
+                    android:id="@+id/item_swipe_right_indicator"
+                    android:alpha="0"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="left|bottom"
+                    android:background="#5AF" />
+
+
+            </FrameLayout>
+
+
+        </FrameLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/descText"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            android:text="Description"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/eventTime"
+            android:textSize="20sp"
+            android:textColor="@android:color/holo_blue_bright"
+            android:layout_marginLeft="10dp" android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"/>
+
+        <city.happening.happening.Cards.CardAdapters.HorizontalScroll.HorizontalListView
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:id="@+id/facebookScroll"
+            android:layout_margin="10dp">
+
+        </city.happening.happening.Cards.CardAdapters.HorizontalScroll.HorizontalListView>
+
+    </LinearLayout>
+
+</FrameLayout>
