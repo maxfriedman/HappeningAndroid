@@ -1,33 +1,28 @@
 package city.happening.happening.Profile;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageView;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.parse.FindCallback;
+import com.facebook.login.widget.ProfilePictureView;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
-import city.happening.happening.EventActivity;
-import city.happening.happening.EventFragment;
-import city.happening.happening.HappFromParse;
-import city.happening.happening.HappeningLab;
 import city.happening.happening.R;
 
 /**
@@ -35,56 +30,82 @@ import city.happening.happening.R;
  */
 public class FriendsList extends Fragment {
 
-    private ParseQueryAdapter<HappFromParse> mEventListAdapter;
+    private FrListAdapter mAdapter;
     private LayoutInflater mInflater;
     private ParseUser mParseUser;
     private ListView mListView;
+    private ArrayList<Map<String,String>> mFriends;
 
-    public static FriendsList newInstance() {
 
-        FriendsList f = new FriendsList();
-        Bundle b = new Bundle();
-        f.setArguments(b);
+    private String mParseID, mFaceBookId;
+    public static final String EXTRA_PROFILE_ID = "happening.PROFILE_ID";
+    public static final String EXTRA_PROFILE_ID_FB = "happening.PROFILE_ID_FB";
 
-        return f;
+    public static FriendsList newInstance(String userId, String idFB){
+        Log.e("FriendsList", "Id " + userId);
+        Bundle args = new Bundle();
+        args.putSerializable(EXTRA_PROFILE_ID, userId);
+        args.putSerializable(EXTRA_PROFILE_ID_FB, idFB);
+        FriendsList fragment = new FriendsList();
+        fragment.setArguments(args);
+
+        return fragment;
+
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        Log.e("EventsList", "Created");
+        mInflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        mParseID = (String)getArguments().getSerializable(EXTRA_PROFILE_ID);
+        mFaceBookId = (String)getArguments().getSerializable(EXTRA_PROFILE_ID_FB);
+        if (mParseID==null){
+            mParseID = ParseUser.getCurrentUser().getObjectId();
+        }
+        Log.e("FriendProfile oncreate","Id"+mParseID);
+        ParseQuery<ParseUser> query= ParseUser.getQuery() ;
+        query.whereEqualTo("objectId",mParseID);
+        try {
+            mParseUser = query.getFirst();
+            Log.e("FriendProfile","user"+mParseUser);
+        }catch (ParseException e){
+            Log.e("FriendProfile","exception" +e);
+        }
+
 
     }
+
 
 
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragmentwithlist,container,false);
-        mListView =(ListView) v.findViewById(R.id.listView);
-        mInflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ParseQueryAdapter.QueryFactory<HappFromParse> factory = new ParseQueryAdapter.QueryFactory<HappFromParse>() {
-            public ParseQuery<HappFromParse> create() {
-                Calendar rightNow = Calendar.getInstance();
-                ParseQuery<HappFromParse> query = HappFromParse.getQuery();
-                rightNow.add(Calendar.MINUTE,-30);
-                query.whereGreaterThan("EndTime",rightNow);
-                query.orderByAscending("EndTime");
-                query.fromLocalDatastore();
-                return query;
+        mListView = (ListView) v.findViewById(R.id.listView);
+        mFriends = new ArrayList<>();
+        ArrayList<Map<String,String>>tempList =(ArrayList<Map<String,String>>)mParseUser.get("friends");
+        ArrayList<String> names = new ArrayList<>();
+        for (Map<String,String>user:tempList){
+            names.add(user.get("name"));
+        }
+        Collections.sort(names);
+        Log.e("EventFriend",""+names);
+        for (String name: names){
+            for (int i = 0;i<tempList.size();i++){
+                if (name==tempList.get(i).get("name")){
+                    mFriends.add(tempList.get(i));
+                }
             }
-        };
-        mEventListAdapter = new EventListAdapter(getActivity(),factory);
-        mListView.setAdapter(mEventListAdapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HappFromParse happFromParse =(HappFromParse) mEventListAdapter.getItem(position);
-                happFromParse.setDrawableResourceId(happFromParse.getHash());
-                HappeningLab.get(getActivity()).addHappening(happFromParse);
-                Intent i = new Intent(getActivity(), EventActivity.class);
-                i.putExtra(EventFragment.EXTRA_EVENT_ID, happFromParse.getObjectId());
-                startActivityForResult(i, 0);
-            }
-        });
-        loadFromParse();
+        }
+
+
+        Log.e("EventFriend List",""+mFriends);
+
+        mAdapter = new FrListAdapter(getActivity(),mFriends);
+        Log.e("EventFriend List",""+mAdapter);
+        mListView.setAdapter(mAdapter);
 
 
         return v;
@@ -92,85 +113,78 @@ public class FriendsList extends Fragment {
 
 
 
-    private void loadFromParse(){
-        Calendar rightNow = Calendar.getInstance();
-        ParseQuery<ParseObject> swipesQuery = ParseQuery.getQuery("Swipes");
-        swipesQuery.whereEqualTo("UserID", ParseUser.getCurrentUser().getObjectId());
-        swipesQuery.whereEqualTo("swipesRight", true);
-        //swipesQuery.fromLocalDatastore();
-        swipesQuery.setLimit(1000);
 
-        ParseQuery eventQuery = ParseQuery.getQuery("Event");
-        // eventQuery.fromLocalDatastore();
-        eventQuery.whereMatchesKeyInQuery("objectId", "EventID", swipesQuery);
-        eventQuery.whereGreaterThan("EndTime", rightNow);
-        eventQuery.orderByAscending("Date");
-        eventQuery.setLimit(1000);
+    private class FrListAdapter extends BaseAdapter {
+        List<Map<String,String>> mFriends;
+        Context mContext;
 
-        eventQuery.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List list, ParseException e) {
-                if(e==null){
-
-                    for (int i = 0; i < list.size(); i++) {
-                        Log.e("Profile", " " + list.get(i));
-                        HappFromParse temp = (HappFromParse) list.get(i);
-                        temp.setDrawableResourceId(temp.getHash());
-                        temp.pinInBackground();
-
-                    }
-                    mEventListAdapter.loadObjects();
+        public FrListAdapter(Context context,ArrayList<Map<String,String>>friends) {
+            mFriends = friends;
+            mContext =context;
+            mInflater = LayoutInflater.from(context);
+        }
 
 
-                }
-            }
-
-        });
-
-    }
-    private class EventListAdapter extends ParseQueryAdapter<HappFromParse> {
-        public EventListAdapter(Context context,ParseQueryAdapter.QueryFactory<HappFromParse> queryFactory) {
-            super(context, queryFactory);
+        @Override
+        public int getCount() {
+            return mFriends.size();
         }
 
         @Override
-        public View getItemView(HappFromParse happening,View convertView,ViewGroup parent){
+        public Map<String,String> getItem(int position) {
+            return mFriends.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View v;
             ViewHolder holder;
             if(convertView == null) {
-                convertView = mInflater.inflate(R.layout.list_item_event,parent,false );
+                v = mInflater.inflate(R.layout.friend_list_item, parent, false);
                 holder = new ViewHolder();
-                holder.avatar = (ImageView)convertView.findViewById(R.id.eventImage);
-                holder.name = (TextView)convertView.findViewById(R.id.event_title);
-                holder.hashTag = (TextView)convertView.findViewById(R.id.hashTag);
-                holder.location = (TextView)convertView.findViewById(R.id.eventLocation);
-                holder.time = (TextView)convertView.findViewById(R.id.eventTime);
-                // holder.facebookScroll = (LinearLayout) convertView.findViewById(R.id.facebookScroll);
-                convertView.setTag(holder);
+                holder.name =(TextView) v.findViewById(R.id.friendname);
+                holder.avatar =(ProfilePictureView) v.findViewById(R.id.profpic);
+                holder.container = (LinearLayout) v.findViewById(R.id.friendContainer);
+                v.setTag(holder);
             } else {
-                holder = (ViewHolder)convertView.getTag();
+                v = convertView;
+                holder = (ViewHolder)v.getTag();
             }
-            mParseUser = ParseUser.getCurrentUser();
-            //  ArrayList<Map<String,String>> friendsList =getFriendsList();
+            holder.name.setText("");
+            final String fbID =(String) mFriends.get(position).get("id");
+            final String parseID =(String) mFriends.get(position).get("parseId");
+            String name = (String)mFriends.get(position).get("name");
 
-            holder.avatar.setImageResource(happening.getDrawableResourceId());
-            holder.avatar.setScaleType(ImageView.ScaleType.FIT_XY);
-            if(happening.getImage()!=null){
-                holder.avatar.setImageBitmap(happening.getImage());
-                // scaleImage(holder.avatar);
-            }
-//            holder.hashTag.setText(happening.getHash());
-            holder.name.setText(happening.getTitle());
-            holder.location.setText("At " + happening.getLocation());
-            if (happening.get("Date")!=null)holder.time.setText(happening.get("Date").toString());
+            holder.avatar.setProfileId(fbID);
+            holder.avatar.setPresetSize(ProfilePictureView.SMALL);
+            holder.name.setText(name);
+            holder.container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(getActivity(),ProfileActivity.class);
+                    Log.e("FriendsList","PArseID"+parseID);
+                    i.putExtra(ProfileFragment.EXTRA_PROFILE_ID, parseID);
+                    i.putExtra(ProfileFragment.EXTRA_PROFILE_ID_FB,fbID);
+                    startActivityForResult(i,0);
+                }
+            });
 
 
-            return convertView;
+
+
+
+            return v;
         }
     }
     private static class ViewHolder {
-        public ImageView avatar;
-        public TextView name, location,hashTag,time;
-        public LinearLayout facebookScroll;
+        public ProfilePictureView avatar;
+        public TextView name;
+        public LinearLayout container;
 
     }
 

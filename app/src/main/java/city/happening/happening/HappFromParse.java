@@ -1,6 +1,5 @@
 package city.happening.happening;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -55,7 +54,9 @@ public class HappFromParse extends ParseObject {
                     if (e == null) {
                         Log.d("test", "We've got data in data.");
                         // use data for something
-                        mImage = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        BitmapFactory.Options options=new BitmapFactory.Options();// Create object of bitmapfactory's option method for further option use
+                        options.inSampleSize = 2;
+                        mImage = BitmapFactory.decodeByteArray(data, 0, data.length,options);
 
                     } else {
                         Log.e("test", "There was a problem downloading the data.");
@@ -64,7 +65,7 @@ public class HappFromParse extends ParseObject {
 
 
             });
-        }else if(fileObject==null&&getHash()!=null){
+        }/*else if(fileObject==null&&getHash()!=null){
             int id;
             if(getHash().equalsIgnoreCase("dining")){
                 id = (R.drawable.dining);
@@ -87,8 +88,8 @@ public class HappFromParse extends ParseObject {
             }else{
                 id = R.drawable.other;
             }
-            mImage = BitmapFactory.decodeResource(Resources.getSystem(),id);
-        }else{
+            mImage = BitmapFactory.decodeResource(Resources.getSystem(),id);*/
+        else{
             mImage=null;
 
         }

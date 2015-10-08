@@ -9,12 +9,12 @@
     android:layout_width="match_parent"
     android:orientation="vertical" android:padding="0dp"
     android:clickable="true"
-    >
+    android:weightSum="1">
 
 
     <LinearLayout
         android:gravity="center_horizontal"
-        android:layout_height="match_parent"
+        android:layout_height="200dp"
         android:layout_width="300dp"
         android:orientation="vertical"
         android:layout_marginBottom="20dp"
@@ -24,67 +24,81 @@
         android:background="@drawable/bg_selector"
         android:id="@+id/eventCard"
 
-        >
+        android:layout_weight="0.11">
     <FrameLayout android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
+                 android:layout_height="match_parent"
                  android:layout_weight="0"
                  android:layout_gravity="center_horizontal"
+                 android:background="@drawable/bg_selector"
                  android:foregroundGravity="center_horizontal"
                  android:id="@+id/listItemLayout"
-
-
         >
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="match_parent"
             android:layout_gravity="top|center"
-            android:scaleType="fitXY"
             android:id="@+id/eventImage"
             android:src="@drawable/happy_hour"
+            android:background="@drawable/bg_selector"
+            android:scaleType="centerCrop"
             />
-<!--        <View
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:background="@drawable/actionbar_gradient_dark" />-->
+        <View android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_gravity="top|center"
+              android:background="@drawable/gradient_cards"/>
 
-        <TextView
-            android:id="@+id/event_title"
-            android:textSize="20sp"
-            android:textColor="@android:color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Title"
-            android:layout_marginTop="23dp" android:layout_gravity="bottom"
-            />
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:id="@+id/event_title"
+                android:textSize="20sp"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/eventTime"
+                android:textColor="@android:color/white"
+                android:layout_marginLeft="10dp"
 
+                android:text="TempTime" android:layout_marginTop="5dp"/>
+            <View android:layout_width="300dp" android:layout_height="5dp"
+                android:background="#FFFFFF"
+                  android:layout_marginTop="5dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/eventLocation"
+                android:textSize="15sp"
+                android:textColor="@android:color/white"
+                android:text="Description"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"/>
+            <city.happening.happening.HorizontalListView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/facebookScroll"
+                android:layout_gravity="bottom" android:layout_margin="10dp">
+
+
+            </city.happening.happening.HorizontalListView>
+
+
+        </LinearLayout>
 
     </FrameLayout>
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/eventLocation"
-        android:textSize="20sp"
-        android:textColor="@android:color/black"
-        android:text="Description"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/eventTime"
-
-        />
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/facebookScroll"
-        >
 
 
-    </HorizontalScrollView>
     </LinearLayout>
 
 </LinearLayout>

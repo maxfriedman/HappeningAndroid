@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.Profile;
+import com.parse.ParseUser;
+
 import city.happening.happening.Profile.ProfileFragment;
 import city.happening.happening.R;
 
@@ -32,7 +35,7 @@ public class Tab4Container extends BaseContainerFragment {
     }
 
     private void initView() {
-        replaceFragment(new ProfileFragment(), false);
+        replaceFragment(new ProfileFragment().newInstance(ParseUser.getCurrentUser().getObjectId(), Profile.getCurrentProfile().getId()), false);
     }
 
 }

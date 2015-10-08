@@ -12,6 +12,16 @@ import city.happening.happening.R;
  * Created by Alex on 9/8/2015.
  */
 public class InTheWorks extends Fragment {
+
+    /*
+    * ACitvity Folder
+    * activity table
+    *
+    *
+    *
+    * */
+
+
     @Override
     public void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

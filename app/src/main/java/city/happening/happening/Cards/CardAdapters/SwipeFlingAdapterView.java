@@ -7,6 +7,7 @@ import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -17,8 +18,8 @@ import city.happening.happening.R;
 public class SwipeFlingAdapterView extends BaseFlingAdapterView {
 
 
-    private int MAX_VISIBLE = 2;
-    private int MIN_ADAPTER_STACK = 3;
+    private int MAX_VISIBLE = 3;
+    private int MIN_ADAPTER_STACK = 2;
     private float ROTATION_DEGREES = 15.f;
 
     private CustomArrayAdapter mAdapter;
@@ -118,6 +119,7 @@ public class SwipeFlingAdapterView extends BaseFlingAdapterView {
             View newUnderChild = mAdapter.getView(startingIndex, null, this);
             if (newUnderChild.getVisibility() != GONE) {
                 makeAndAddView(newUnderChild);
+                Log.d("AdapterView","CardAdded");
                 LAST_OBJECT_IN_STACK = startingIndex;
             }
             startingIndex++;

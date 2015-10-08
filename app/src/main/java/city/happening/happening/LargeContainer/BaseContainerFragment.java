@@ -23,7 +23,7 @@ public class BaseContainerFragment extends Fragment {
     }
 
     public boolean popFragment() {
-        Log.e("Ritesh", "pop fragment: " + getChildFragmentManager().getBackStackEntryCount());
+        Log.e("BaseContainer", "pop fragment: " + getChildFragmentManager().getBackStackEntryCount());
         boolean isPop = false;
         if (getChildFragmentManager().getBackStackEntryCount() > 0) {
             isPop = true;

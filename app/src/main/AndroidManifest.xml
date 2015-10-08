@@ -3,7 +3,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-
+    <uses-feature android:required="true"
+        android:name="android.hardware.location.gps" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -14,7 +15,9 @@
                  android:label="@string/app_name"
                  android:icon="@mipmap/ic_launcher"
                  android:theme="@style/AppTheme2"
-                 android:name=".LargeContainer.HappeningApplication">
+                 android:name=".LargeContainer.HappeningApplication"
+                 android:screenOrientation="portrait"
+        >
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBt24yuyu_SpdLg9YxyFhDt-bXCT-yZr6A" />
@@ -22,6 +25,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <meta-data android:name="com.usebutton.applicationid" android:value="app-070dce57d47ec28b"/>
         <activity android:name=".Login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -32,13 +36,9 @@
         </activity>
         <activity android:name=".LargeContainer.MyTabActivity"
                   android:label="@string/app_name"
-                  ></activity>
-        <activity
-            android:name=".LargeContainer.HappeningMain"
-            android:label="@string/app_name" >
+                  android:screenOrientation="portrait"
+            />
 
-
-        </activity>
         <activity android:name=".Profile.ProfileActivity"
                   android:label="@string/app_name">
 
@@ -50,6 +50,9 @@
                   >
 
         </activity>
+        <activity android:name=".Profile.FriendProfileActivity"
+                  android:label="@string/app_name"
+            />
         <activity
             android:name=".EventActivity"
             android:label="@string/app_name" >
@@ -61,6 +64,14 @@
                       "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
                   android:theme="@android:style/Theme.Translucent.NoTitleBar"
                   android:label="@string/app_name" />
+        <activity android:name=".CitySelector"/>
+
+        <receiver android:name=".Cards.LocationReceiver"
+                  android:exported="false">
+            <intent-filter>
+                <action android:name="city.happening.happening.Cards.ACTION_LOCATION"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 

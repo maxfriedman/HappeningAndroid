@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import city.happening.happening.ActivityFeed.InTheWorks;
+import city.happening.happening.ActivityFeed.ActivityFragment;
 import city.happening.happening.R;
 
 public class Tab2Container extends BaseContainerFragment {
@@ -33,7 +33,7 @@ public class Tab2Container extends BaseContainerFragment {
     }
 
     private void initView() {
-        replaceFragment(new InTheWorks(), false);
+        replaceFragment(new ActivityFragment(), false);
 
     }
 

@@ -46,8 +46,8 @@ public class MyTabActivity extends ActionBarActivity {
                 R.drawable.tab_indicator_gen, "Events", R.drawable.cards_unpressed), Tab1Container.class, null);
         mTabHost.addTab(setIndicator(MyTabActivity.this,mTabHost.newTabSpec(TAB_2_TAG),
                 R.drawable.tab_indicator_gen,"Activity",R.drawable.heart),Tab2Container.class,null);
-        mTabHost.addTab(setIndicator(MyTabActivity.this,mTabHost.newTabSpec(TAB_3_TAG),
-                R.drawable.tab_indicator_gen,"Groups",R.drawable.groups_tab),Tab3Container.class,null);
+       // mTabHost.addTab(setIndicator(MyTabActivity.this,mTabHost.newTabSpec(TAB_3_TAG),
+       //         R.drawable.tab_indicator_gen,"Groups",R.drawable.groups_tab),Tab3Container.class,null);
         mTabHost.addTab(setIndicator(MyTabActivity.this,mTabHost.newTabSpec(TAB_4_TAG),
                 R.drawable.tab_indicator_gen,"Me",R.drawable.profile_tab),Tab4Container.class,null);
 

@@ -15,11 +15,11 @@
     <string name="mapsApiKey">AIzaSyBt24yuyu_SpdLg9YxyFhDt-bXCT-yZr6A</string>
     
     <string-array name="cities">
-        <item>Washington,DC</item>
-        <item>Boston,MA</item>
-        <item>Nashville,TN</item>
-        <item>Philadelphia,PA</item>
-        <item>San Francisco,CA</item>
+        <item>Washington ,DC</item>
+        <item>Boston ,MA</item>
+        <item>Nashville ,TN</item>
+        <item>Philadelphia ,PA</item>
+        <item>San Francisco ,CA</item>
     </string-array>
     <string-array name="categories">
         <item>Most popular</item>

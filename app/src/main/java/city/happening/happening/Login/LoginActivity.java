@@ -4,6 +4,7 @@ package city.happening.happening.Login;
  * Created by Alex on 8/13/2015.
  */
 
+import android.support.v4.app.DialogFragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,11 +43,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import city.happening.happening.LargeContainer.MyTabActivity;
+import city.happening.happening.CitySelector;
+import city.happening.happening.ProgressDialogFragment;
 import city.happening.happening.R;
 
 
 public class LoginActivity extends AppCompatActivity {
+    DialogFragment mDialog;
     ImageView mProfileImage;
     LoginButton mBtnFb;
     TextView mUsername, mEmailID;
@@ -61,10 +64,13 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-////        if (!ParseUser.getCurrentUser().isNew()&&!AccessToken.getCurrentAccessToken().isExpired()){
-      //      Intent i = new Intent(this, MyTabActivity.class);
-      /////      startActivity(i);
-    //    }
+    /*    if (AccessToken.getCurrentAccessToken()==null||!AccessToken.getCurrentAccessToken().isExpired()){
+           // mBtnFb.setVisibility(View.GONE);
+           // mVideoView.setVisibility(View.GONE);
+            mDialog = ProgressDialogFragment.newInstance();
+            mDialog.show(getFragmentManager(), "Processing Your Info!!");
+            getUserDetailsFromFB();
+        }*/
 
         setContentView(R.layout.activity_login);
 
@@ -84,6 +90,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 mBtnFb.setVisibility(View.GONE);
+                mVideoView.setVisibility(View.GONE);
+                mDialog = new ProgressDialogFragment().newInstance("Processing Your Info!");
+                mDialog.show(getSupportFragmentManager(), "Processing Your Info!!");
                 getUserDetailsFromFB();
 
             }
@@ -300,7 +309,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (user.get("socialMode")==null)user.put("socialMode",true);
         if (user.get("userLocTitle")==null)user.put("userLocTitle","");
-        if(user.get("userLocSubTitle")==null)user.put("userLocSubTitle","");
+        if (user.get("userLocSubTitle")==null)user.put("userLocSubTitle","");
         if (user.get("radius")==null)user.put("radius",50);
 
         ArrayList<String> categories = new ArrayList<>();
@@ -320,14 +329,16 @@ public class LoginActivity extends AppCompatActivity {
         if(user.get("categories")==null)user.put("categories",categories);
         if(user.get("categoryName")==null)user.put("categoryName","Most Popular");
         if (user.get("time")==null)user.put("time","today");
-        Log.d("Parse User", "" + user.get("categories") + user.get("radius"));
+        Log.d("Parse User", "" + user.get("categories") + user.get("userLocTitle"));
         user.pinInBackground();
         user.saveEventually();
-        Intent i = new Intent(this, MyTabActivity.class);
+        Intent i = new Intent(this, CitySelector.class);
         startActivity(i);
+        finish();
 
 
     }
+
 
 
 }

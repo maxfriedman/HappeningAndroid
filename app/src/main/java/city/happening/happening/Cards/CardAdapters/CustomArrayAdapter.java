@@ -2,7 +2,6 @@ package city.happening.happening.Cards.CardAdapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +16,12 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import city.happening.happening.Cards.CardAdapters.HorizontalScroll.HorizontalListView;
-import city.happening.happening.Cards.CardAdapters.HorizontalScroll.HorizontalScrollAdapter;
 import city.happening.happening.HappFromParse;
+import city.happening.happening.ImageHelper;
 import city.happening.happening.R;
 
 /**
@@ -35,7 +33,6 @@ public class CustomArrayAdapter extends BaseAdapter {
     private ParseUser mParseUser;
     private Context mContext;
     private Bitmap mBitmap;
-    private final Handler handler = new Handler();
 
     public CustomArrayAdapter(Context context,ArrayList<HappFromParse> events) {
         mInflater = LayoutInflater.from(context);
@@ -60,11 +57,6 @@ public class CustomArrayAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ArrayList <Map<String,String>>friends = new ArrayList<>();
-        Map<String,String> map = new HashMap<>();
-        map.put("Name","Max Friedman");
-        map.put("FBObjectID","10203071426722450");
-        friends.add(map);
         View v;
         ViewHolder holder;
         if(convertView == null) {
@@ -90,7 +82,10 @@ public class CustomArrayAdapter extends BaseAdapter {
             holder.avatar.setImageResource(happening.getDrawableResourceId());
             holder.avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
             if(happening.getImage()!=null){
-                holder.avatar.setImageBitmap(happening.getImage());
+                Bitmap temp = ImageHelper.getRoundedCornerBitmap(happening.getImage(), 10);
+                ImageHelper helper =  new ImageHelper();
+                Bitmap gradientMap = helper.addGradient(temp);
+                holder.avatar.setImageBitmap(gradientMap);
                 // scaleImage(holder.avatar);
             }
             holder.hashTag.setText(happening.getHash());
@@ -105,8 +100,8 @@ public class CustomArrayAdapter extends BaseAdapter {
 
             }
             if(mParseUser.get("friends")!=null){
-                Log.d("Horz scroll",""+friendsList.size());
-                holder.facebookScroll.setAdapter(new HorizontalScrollAdapter(mContext,friendsList));
+                Log.d("Horz scroll", "" + friendsList.size());
+              //  holder.facebookScroll.setAdapter(new FBScrollAdapter(mContext,friendsList));
 
             }
 
@@ -123,20 +118,7 @@ public class CustomArrayAdapter extends BaseAdapter {
         public FrameLayout photoholder;
         public HorizontalListView facebookScroll;
 
-
-
     }
-
-    /*for(int i =0; i<friendsList.size();i++){
-        String tempFBID = friendsList.get(i).get("id");
-        String tempName = friendsList.get(i).get("name");
-        String tempParseID = friendsList.get(i).get("parseId");
-        ProfilePictureView image = new ProfilePictureView(mContext);
-        image.setProfileId(tempFBID);
-        image.setPresetSize(ProfilePictureView.SMALL);
-        holder.facebookScroll.addView(image);
-*/
-
 
     private ArrayList<Map<String,String>> getFriendsList(){
         ArrayList<Map<String,String>> tempList = new ArrayList<>();
@@ -148,6 +130,7 @@ public class CustomArrayAdapter extends BaseAdapter {
 
         return tempList;
     }
+
 
 
 

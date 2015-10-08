@@ -14,13 +14,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import city.happening.happening.Cards.CardFragment;
+import city.happening.happening.Cards.CardFrag;
 import city.happening.happening.R;
 import city.happening.happening.SettingsActivity;
 
 public class Tab1Container extends BaseContainerFragment {
 
     private boolean IsViewInited;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class Tab1Container extends BaseContainerFragment {
     }
 
     private void initView() {
-        replaceFragment(new CardFragment(), false);
+        replaceFragment(new CardFrag(), false);
     }
 
 }

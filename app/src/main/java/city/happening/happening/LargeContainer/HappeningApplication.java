@@ -6,6 +6,8 @@ import com.facebook.FacebookSdk;
 import com.parse.Parse;
 import com.parse.ParseObject;
 import com.parse.PushService;
+import com.usebutton.sdk.BuildConfig;
+import com.usebutton.sdk.Button;
 
 import org.json.JSONObject;
 
@@ -31,6 +33,12 @@ public class HappeningApplication extends Application {
 
         PushService.setDefaultPushCallback(this, HappeningMain.class);
 
+        Button.getButton(this).start();
+        if (BuildConfig.DEBUG) {
+            // Enable debug logging on debug builds
+            // adb logcat ButtonSDK:D *:S
+            Button.enableDebugLogging();
+        }
 
 
 

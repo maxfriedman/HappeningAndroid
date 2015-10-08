@@ -3,8 +3,8 @@
 
     <style name="SwipeFling">
         <item name="rotation_degrees">2</item>
-        <item name="min_adapter_stack">1</item>
-        <item name="max_visible">2</item>
+        <item name="min_adapter_stack">2</item>
+        <item name="max_visible">3</item>
     </style>
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
         <!-- Customize your theme here. -->
