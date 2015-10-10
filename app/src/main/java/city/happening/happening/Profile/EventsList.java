@@ -35,7 +35,7 @@ import city.happening.happening.R;
  */
 public class EventsList extends Fragment {
 
-    private ParseQueryAdapter<HappFromParse> mEventListAdapter;
+    private ParseQueryAdapter<ParseObject> mEventListAdapter;
     private LayoutInflater mInflater;
     private ParseUser mParseUser;
     private ListView mListView;
@@ -97,16 +97,33 @@ public class EventsList extends Fragment {
         View v = inflater.inflate(R.layout.fragmentwithlist, container, false);
         mListView =(ListView) v.findViewById(R.id.listView);
         mInflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ParseQueryAdapter.QueryFactory<HappFromParse> factory = new ParseQueryAdapter.QueryFactory<HappFromParse>() {
-            public ParseQuery<HappFromParse> create() {
-                Calendar rightNow = Calendar.getInstance();
+        ParseQueryAdapter.QueryFactory<ParseObject> factory = new ParseQueryAdapter.QueryFactory<ParseObject>() {
+            public ParseQuery<ParseObject> create() {
+               /* Calendar rightNow = Calendar.getInstance();
                 ParseQuery<HappFromParse> query = HappFromParse.getQuery();
                 rightNow.add(Calendar.MINUTE, -30);
                 Date today = new Date(rightNow.getTimeInMillis());
                 query.whereGreaterThan("EndTime", today);
                 query.orderByAscending("EndTime");
-                query.fromLocalDatastore();
-                return query;
+                query.fromPin("EventsList");
+                return query;*/
+                Calendar rightNow = Calendar.getInstance();
+                Date today = new Date(rightNow.getTimeInMillis());
+                ParseQuery<ParseObject> swipesQuery = ParseQuery.getQuery("Swipes");
+                swipesQuery.whereEqualTo("UserID",mParseID);
+                Log.e("Events", "userid" + mParseID);
+                swipesQuery.whereEqualTo("swipedRight", true);
+                //swipesQuery.fromLocalDatastore();
+                swipesQuery.setLimit(1000);
+
+                ParseQuery eventQuery = ParseQuery.getQuery("Event");
+                // eventQuery.fromLocalDatastore();
+                eventQuery.whereMatchesKeyInQuery("objectId", "EventID", swipesQuery);
+                eventQuery.whereGreaterThan("EndTime", today);
+                eventQuery.orderByAscending("Date");
+                eventQuery.setLimit(1000);
+                eventQuery.orderByDescending("EndTime");
+                return eventQuery;
             }
         };
         mEventListAdapter = new EventListAdapter(getActivity(),factory);
@@ -136,6 +153,8 @@ public class EventsList extends Fragment {
 
     private void loadFromParse(){
         Log.e("EventsList", "LoadfromParse");
+
+        //HappFromParse.unpinAll();
         Calendar rightNow = Calendar.getInstance();
         Date today = new Date(rightNow.getTimeInMillis());
         ParseQuery<ParseObject> swipesQuery = ParseQuery.getQuery("Swipes");
@@ -161,7 +180,7 @@ public class EventsList extends Fragment {
                         Log.e("Profile", " " + list.get(i));
                         HappFromParse temp = (HappFromParse) list.get(i);
                         temp.setDrawableResourceId(temp.getHash());
-                        temp.pinInBackground();
+                        temp.pinInBackground("EventsList");
 
                     }
                     mEventListAdapter.loadObjects();
@@ -176,18 +195,20 @@ public class EventsList extends Fragment {
         });
 
     }
-    private class EventListAdapter extends ParseQueryAdapter<HappFromParse> {
-        public EventListAdapter(Context context,ParseQueryAdapter.QueryFactory<HappFromParse> queryFactory) {
+    private class EventListAdapter extends ParseQueryAdapter<ParseObject> {
+        public EventListAdapter(Context context,ParseQueryAdapter.QueryFactory<ParseObject> queryFactory) {
             super(context, queryFactory);
         }
 
         @Override
-        public HappFromParse getItem(int index) {
+        public ParseObject getItem(int index) {
             return super.getItem(index);
         }
 
         @Override
-        public View getItemView(HappFromParse happening,View convertView,ViewGroup parent){
+        public View getItemView(ParseObject parseObject,View convertView,ViewGroup parent){
+            HappFromParse happening =(HappFromParse) parseObject;
+            happening.setDrawableResourceId(happening.getHash());
             final HappFromParse tempHapp = happening;
             ViewHolder holder;
             if(convertView == null) {

@@ -44,9 +44,7 @@ import city.happening.happening.R;
  * Created by Alex on 9/28/2015.
  */
 public class CardFrag extends Fragment {
-    public static final String EXTRA_CARD_ID = "Happening.CARD_ID";
     private static final String TAG = "CardFrag";
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     public static final int BUTTON_CLICK_REQUEST = 1;
 
     private DialogFragment mDialog;
@@ -198,7 +196,7 @@ public class CardFrag extends Fragment {
         }*/
        // mDialog = new ProgressDialogFragment().newInstance("Loading Happenings");
         newCards();
-        arrayAdapter = new CustomArrayAdapter(getActivity(),mHappenings);
+        arrayAdapter = new CustomArrayAdapter(getActivity(),mHappenings,getActivity());
         arrayAdapter.notifyDataSetChanged();
         flingContainer.setAdapter(arrayAdapter);
         flingContainer.setMinStackInAdapter(0);
@@ -407,6 +405,7 @@ public class CardFrag extends Fragment {
                 startActivityForResult(i, BUTTON_CLICK_REQUEST);
             }
         });
+
 
 
         return v;

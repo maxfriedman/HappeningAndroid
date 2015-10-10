@@ -1,6 +1,8 @@
 package city.happening.happening.Cards.CardAdapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,13 +12,27 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.DateTime;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
 import com.parse.ParseUser;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import city.happening.happening.Cards.CardAdapters.HorizontalScroll.HorizontalListView;
@@ -32,12 +48,26 @@ public class CustomArrayAdapter extends BaseAdapter {
     private List<HappFromParse> mHappenings = new ArrayList<>();
     private ParseUser mParseUser;
     private Context mContext;
+    com.google.api.services.calendar.Calendar mService;
+    GoogleAccountCredential mCredential;
     private Bitmap mBitmap;
+    Boolean clicked = false;
 
-    public CustomArrayAdapter(Context context,ArrayList<HappFromParse> events) {
+    static final int REQUEST_ACCOUNT_PICKER = 1000;
+    static final int REQUEST_AUTHORIZATION = 1001;
+    static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
+    private static final String PREF_ACCOUNT_NAME = "accountName";
+    private static final String[] SCOPES = { CalendarScopes.CALENDAR };
+
+    public CustomArrayAdapter(Context context,ArrayList<HappFromParse> events, Activity activity) {
         mInflater = LayoutInflater.from(context);
         mHappenings = events;
         mContext = context;
+        SharedPreferences settings = activity.getPreferences(Context.MODE_PRIVATE);
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                mContext, Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff())
+                .setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
     }
 
     @Override
@@ -69,6 +99,7 @@ public class CustomArrayAdapter extends BaseAdapter {
             holder.time = (TextView)v.findViewById(R.id.eventTime);
             holder.facebookScroll = (HorizontalListView) v.findViewById(R.id.facebookScroll);
             holder.photoholder = (FrameLayout)v.findViewById(R.id.photoholder);
+            holder.calendar = (ImageView)v.findViewById(R.id.calendar);
             v.setTag(holder);
         } else {
             v = convertView;
@@ -105,14 +136,58 @@ public class CustomArrayAdapter extends BaseAdapter {
 
             }
 
+            final HappFromParse tempHap = happening;
+
+            holder.calendar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (clicked==false){
+                        clicked = true;
+                        HttpTransport transport = AndroidHttp.newCompatibleTransport();
+                        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+                        mService = new com.google.api.services.calendar.Calendar.Builder(transport, jsonFactory, mCredential)
+                                .setApplicationName("Google Calendar API Android Quickstart")
+                                .build();
+                        Event event = new Event();
+                        event.setSummary("Test Event").setLocation(tempHap.getLocation());
+                        Date startDate = (Date)tempHap.get("Date");
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US);
+                        DateTime startDateTime =new DateTime(startDate);
+                        EventDateTime start = new EventDateTime().setDateTime(startDateTime);
+                        event.setStart(start);
+                        DateTime endDateTime = new DateTime(((Date)tempHap.get("EndTime")));
+                        EventDateTime end = new EventDateTime().setDateTime(endDateTime);
+                        event.setEnd(end);
+                        String calendarId = "primary";
+                        try {
+                            event = mService.events().insert(calendarId, event).execute();
+                            makeToast(mContext,"Saved to your calendar!");
+                        }catch (Exception e){
+
+                        }
+
+                    }else {
+                        makeToast(mContext,"Already Saved it!");
+
+                    }
+
+                   //Intent i = new Intent(mContext, MainActivity.class);
+                    //mContext.startActivity(i);
+                }
+            });
+
 
 
 
         return v;
     }
+    static void makeToast(Context ctx, String s){
+        Toast.makeText(ctx, s, Toast.LENGTH_SHORT).show();
+    }
 
     private class ViewHolder {
-        public ImageView avatar;
+        public ImageView avatar,calendar;
         public TextView name, location,hashTag,time;
         //public LinearLayout facebookScroll;
         public FrameLayout photoholder;

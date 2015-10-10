@@ -64,13 +64,13 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    /*    if (AccessToken.getCurrentAccessToken()==null||!AccessToken.getCurrentAccessToken().isExpired()){
+        if (AccessToken.getCurrentAccessToken()!=null&&!AccessToken.getCurrentAccessToken().isExpired()&&Profile.getCurrentProfile()!=null){
            // mBtnFb.setVisibility(View.GONE);
            // mVideoView.setVisibility(View.GONE);
-            mDialog = ProgressDialogFragment.newInstance();
-            mDialog.show(getFragmentManager(), "Processing Your Info!!");
+            mDialog = new ProgressDialogFragment().newInstance("Processing Your Info!!");
+            mDialog.show(getSupportFragmentManager(), "Processing Your Info!!");
             getUserDetailsFromFB();
-        }*/
+        }
 
         setContentView(R.layout.activity_login);
 

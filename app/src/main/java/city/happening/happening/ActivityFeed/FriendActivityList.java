@@ -183,8 +183,13 @@ public class FriendActivityList extends Fragment {
             HappFromParse happening = null;
             try{
                 HappFromParse temp = (HappFromParse)parseQuery.get(eventId);
-                temp.setDrawableResourceId(temp.getHash());
-                happening = temp;
+                if (temp.getHash()!=null){
+                    temp.setDrawableResourceId(temp.getHash());
+                    happening = temp;
+                }else {
+                    happening = new HappFromParse();
+                }
+
 
             }catch (ParseException e){
 

@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
-import city.happening.happening.Cards.CardFragment;
+import city.happening.happening.Cards.CardFrag;
 import city.happening.happening.R;
 
 /**
@@ -24,7 +24,7 @@ public class HappeningMain extends FragmentActivity{
         FragmentManager manager = getSupportFragmentManager();
         Fragment fragment = manager.findFragmentById(R.id.fragmentContainer);
         if (fragment == null) {
-            fragment = new CardFragment();
+            fragment = new CardFrag();
             manager.beginTransaction().add(R.id.fragmentContainer, fragment).commit();
 
         }

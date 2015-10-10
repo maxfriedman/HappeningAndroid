@@ -119,13 +119,26 @@
             android:layout_marginLeft="10dp" android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"/>
 
-        <city.happening.happening.Cards.CardAdapters.HorizontalScroll.HorizontalListView
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:id="@+id/facebookScroll"
-            android:layout_margin="10dp">
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:weightSum="1"
+           android:gravity="center">
+           <ImageView
+               android:layout_width="match_parent"
+               android:layout_height="71dp"
+               android:id="@+id/calendar"
+               android:src="@mipmap/ic_event_black_24dp"
+               android:layout_weight="1"
+               />
 
-        </city.happening.happening.Cards.CardAdapters.HorizontalScroll.HorizontalListView>
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:id="@+id/interestedParties"
+               android:text="X Attendies" android:layout_margin="40dp"/>
+       </LinearLayout>
 
     </LinearLayout>
 

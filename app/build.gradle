@@ -36,6 +36,13 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.3.0'
     compile 'com.google.android.gms:play-services:7.5.0'
     compile 'com.android.support:appcompat-v7:22.2.0'
+    //compile 'com.google.android.gms:play-services-identity:7.8.0'
+    compile('com.google.api-client:google-api-client-android:1.20.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    compile('com.google.apis:google-api-services-calendar:v3-rev125-1.20.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
     compile 'com.layer.sdk:layer-sdk:0.16.0'
     compile 'org.slf4j:slf4j-nop:1.5.8'
 }
