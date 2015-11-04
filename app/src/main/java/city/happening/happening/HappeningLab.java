@@ -29,8 +29,9 @@ public class HappeningLab {
     public HappFromParse getHappening(String id){
 
         for(HappFromParse h:mHappenings){
-            Log.e("Error",h.getTitle());
-            Log.e("Error",h.getObjectId());
+            Log.e("HapLab","Hap"+mHappenings.size());
+            Log.e("Error",""+h.getTitle());
+            Log.e("Error",""+h.getObjectId());
             if(h.getObjectId().equals(id))
                 return  h;
         }

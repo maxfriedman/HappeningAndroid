@@ -29,6 +29,7 @@ public class MyTabActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabs);
         InitView();
+
     }
     @Override
     protected void onDestroy() {

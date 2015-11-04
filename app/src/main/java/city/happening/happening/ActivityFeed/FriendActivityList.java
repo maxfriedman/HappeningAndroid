@@ -2,7 +2,11 @@ package city.happening.happening.ActivityFeed;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +38,7 @@ import city.happening.happening.HappFromParse;
 import city.happening.happening.HappeningLab;
 import city.happening.happening.Profile.ProfileActivity;
 import city.happening.happening.Profile.ProfileFragment;
+import city.happening.happening.ProgressDialogFragment;
 import city.happening.happening.R;
 
 /**
@@ -45,6 +50,7 @@ public class FriendActivityList extends Fragment {
     ActivityAdapter mAdapter;
     ArrayList<Map<String,String>> mCurrentActivities;
     ArrayList<ParseObject> activityList;
+    private DialogFragment mDialog;
 
 
     @Override
@@ -64,22 +70,21 @@ public class FriendActivityList extends Fragment {
 
         ParseQueryAdapter.QueryFactory<ParseObject> factory = new ParseQueryAdapter.QueryFactory<ParseObject>() {
             public ParseQuery<ParseObject> create() {
-                ArrayList<Map<String,String>> friends =(ArrayList) ParseUser.getCurrentUser().get("friends");
+               /* ArrayList<Map<String,String>> friends =(ArrayList) ParseUser.getCurrentUser().get("friends");
                 ArrayList<String> idsArray = new ArrayList();
                 for (Map<String,String> id:friends){
                     String tempId = id.get("id");
                     //Log.e("creatingId array", "" + tempId);
                     idsArray.add(tempId);
-                }
+                }*/
                 ParseQuery interestedQuery = ParseQuery.getQuery("Activity");
-                ArrayList<String>type = new ArrayList<>();
+              /*  ArrayList<String>type = new ArrayList<>();
                 type.add("interested");
                 type.add("going");
                 type.add("create");
                 interestedQuery.whereContainedIn("type", type);
-                interestedQuery.whereContainedIn("userFBId", idsArray);
-
-
+                interestedQuery.whereContainedIn("userFBId", idsArray);*/
+                interestedQuery.fromPin("FriendActivityList");
                 interestedQuery.fromLocalDatastore();
                 interestedQuery.orderByDescending("createdDate");
 
@@ -130,6 +135,9 @@ public class FriendActivityList extends Fragment {
         finalQuery.include("eventObject");
         finalQuery.orderByDescending("createdDate");
         finalQuery.setLimit(20);
+        if (mDialog==null)mDialog = new ProgressDialogFragment().newInstance("Loading Happenings");
+        if (!mDialog.isAdded())mDialog.show(getChildFragmentManager(),"Loading");
+
 
         finalQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
@@ -140,13 +148,13 @@ public class FriendActivityList extends Fragment {
                         Map<String, String> activityDict = new HashMap<>();
                         ParseObject object = (ParseObject)list.get(i);
                         int count = 0;
-                        object.pinInBackground();
-                        activityDict.put("objectId", object.getObjectId());
-                        String type = (String) object.get("type");
+                        object.pinInBackground("FriendActivityList");
+                       // activityDict.put("objectId", object.getObjectId());
+                        //String type = (String) object.get("type");
 
-                        activityDict.put("eventId", (String) object.get("eventId"));
+                        //activityDict.put("eventId", (String) object.get("eventId"));
 
-                        mCurrentActivities.add(activityDict);
+                      //  mCurrentActivities.add(activityDict);
                         /*try{
                             Log.e("friendActivityList", "title pinned" + object.getObjectId());
                             object.pin("friendActivityList");
@@ -157,6 +165,8 @@ public class FriendActivityList extends Fragment {
                     }
                     mAdapter.loadObjects();
                     mAdapter.notifyDataSetChanged();
+                    mDialog.dismiss();
+
 
 
                 }
@@ -166,7 +176,7 @@ public class FriendActivityList extends Fragment {
     }
 
     private class ActivityAdapter extends ParseQueryAdapter<ParseObject> {
-
+        ViewHolder mHolder;
         public ActivityAdapter(Context context,ParseQueryAdapter.QueryFactory<ParseObject> queryFactory) {
             super(context, queryFactory);
         }
@@ -181,55 +191,68 @@ public class FriendActivityList extends Fragment {
             final String eventId =(String) parseObject.get("eventId");
             ParseQuery parseQuery = ParseQuery.getQuery("Event");
             HappFromParse happening = null;
+            final HappFromParse tempHapp;
             try{
                 HappFromParse temp = (HappFromParse)parseQuery.get(eventId);
                 if (temp.getHash()!=null){
                     temp.setDrawableResourceId(temp.getHash());
                     happening = temp;
+
                 }else {
-                    happening = new HappFromParse();
+                    happening = temp;
+                    happening.setDrawableResourceId(R.drawable.other);
+                    Log.e("FriendActivity","Happ is new HAPP "+temp.getTitle() );
                 }
 
 
             }catch (ParseException e){
 
             }
+            tempHapp = happening;
             View v;
-            ViewHolder holder;
+            Typeface face=Typeface.createFromAsset(getContext().getAssets(),
+                    "fonts/OpenSansRegular.ttf");
+            Typeface facebold=Typeface.createFromAsset(getContext().getAssets(),
+                    "fonts/OpenSansBold.ttf");
             if(convertView == null) {
                 v = LayoutInflater.from(getActivity()).inflate(R.layout.list_item_activity_friend, parent, false);
-                holder = new ViewHolder();
-                holder.name =(TextView) v.findViewById(R.id.userText);
-                holder.picture =(ImageView) v.findViewById(R.id.activityImage);
-                holder.date = (TextView)v.findViewById(R.id.activityDate);
-                holder.title = (TextView)v.findViewById(R.id.activityTitle);
-                holder.userPicture = (ProfilePictureView)v.findViewById(R.id.userImage);
-                holder.container = (RelativeLayout)v.findViewById(R.id.eventContainer);
-                v.setTag(holder);
+                mHolder = new ViewHolder();
+                mHolder.name =(TextView) v.findViewById(R.id.userText);
+                mHolder.name.setTypeface(facebold);
+                mHolder.interestedIn = (TextView)v.findViewById(R.id.interestedIn);
+                mHolder.interestedIn.setTypeface(face);
+                mHolder.picture =(ImageView) v.findViewById(R.id.activityImage);
+                mHolder.date = (TextView)v.findViewById(R.id.activityDate);
+                mHolder.date.setTypeface(face);
+                mHolder.title = (TextView)v.findViewById(R.id.activityTitle);
+                mHolder.title.setTypeface(facebold);
+                mHolder.userPicture = (ProfilePictureView)v.findViewById(R.id.userImage);
+                mHolder.container = (RelativeLayout)v.findViewById(R.id.eventContainer);
+                v.setTag(mHolder);
             } else {
                 v = convertView;
-                holder = (ViewHolder)v.getTag();
+                mHolder = (ViewHolder)v.getTag();
             }
 
             if (parseObject!=null){
                 Log.e("Parse Object"," "+parseObject );
                 String name = (String) parseObject.get("userFullName");
                 if (name!=null){
-                    holder.name.setText(name+" is interested in: ");
+                    mHolder.name.setText(name+" ");
                 }
 
                 if (parseObject.get("createdDate")!=null){
                     Calendar cal = Calendar.getInstance();
                     cal.setTime((Date) parseObject.get("createdDate"));
-                    holder.date.setText(" " + String.format("%1$ta %1$tb %1$td at %1$tI:%1$tM %1$Tp", cal));
+                    mHolder.date.setText(" " + String.format("%1$ta %1$tb %1$td at %1$tI:%1$tM %1$Tp", cal));
                 }
 
                 if (parseObject.get("userFBId")!=null){
                     final String fbId= (String) parseObject.get("userFBId");
                     final String parseID =(String) parseObject.get("userParseId");
-                    holder.userPicture.setProfileId(fbId);
-                    holder.userPicture.setPresetSize(ProfilePictureView.SMALL);
-                    holder.userPicture.setOnClickListener(new View.OnClickListener() {
+                    mHolder.userPicture.setProfileId(fbId);
+                    mHolder.userPicture.setPresetSize(ProfilePictureView.SMALL);
+                    mHolder.userPicture.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent i = new Intent(getActivity(),ProfileActivity.class);
@@ -243,18 +266,37 @@ public class FriendActivityList extends Fragment {
 
                 if (parseObject.get("eventName")!=null){
                     String title = (String) parseObject.get("eventName");
-                    holder.title.setText(title);
+                    mHolder.title.setText(title);
 
                 }
-                holder.picture.setImageResource(happening.getDrawableResourceId());
-                if (happening.getImage()!=null)holder.picture.setImageBitmap(happening.getImage());
-                final HappFromParse tempHapp = happening;
-                holder.container.setOnClickListener(new View.OnClickListener() {
+                mHolder.picture.setImageResource(happening.getDrawableResourceId());
+                new AsyncTask<Void, Void, Bitmap>() {
+
+
+                    @Override
+                    protected Bitmap doInBackground(Void... params) {
+                        return tempHapp.getImage();
+                    }
+
+                    @Override
+                    protected void onPostExecute(Bitmap result) {
+                        super.onPostExecute(result);
+
+                        // If this item hasn't been recycled already, hide the
+                        // progress and set and show the image
+                        if (result!=null) ActivityAdapter.this.mHolder.picture.setImageBitmap(result);
+
+                    }
+                }.execute();
+
+                mHolder.container.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        HappeningLab.get(getActivity()).addHappening(tempHapp);
+                        HappFromParse temp =tempHapp;
+                        HappeningLab.get(getActivity()).addHappening(temp);
                         Intent i = new Intent(getActivity(), EventActivity.class);
                         i.putExtra(EventFragment.EXTRA_EVENT_ID, eventId);
+                        i.putExtra(EventFragment.EXTRA_EVENT_BOOL, true);
                         startActivityForResult(i, 0);
                     }
                 });
@@ -269,7 +311,7 @@ public class FriendActivityList extends Fragment {
     private static class ViewHolder {
         ProfilePictureView userPicture;
         ImageView picture;
-        TextView name,date,title;
+        TextView name,date,title,interestedIn;
         RelativeLayout container;
 
     }

@@ -15,3 +15,9 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keepattributes Exceptions,InnerClasses,EnclosingMethod
+-keepparameternames
+-keep class com.usebutton.sdk.** { *; }
+-keepclassmembers class * implements android.os.Parcelable {
+    static ** CREATOR;
+}

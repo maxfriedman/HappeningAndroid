@@ -2,43 +2,41 @@ package city.happening.happening.Cards.CardAdapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.DateTime;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.calendar.CalendarScopes;
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
 import com.parse.ParseUser;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import city.happening.happening.Cards.CardAdapters.HorizontalScroll.HorizontalListView;
 import city.happening.happening.HappFromParse;
 import city.happening.happening.ImageHelper;
+import city.happening.happening.InterestedActivity;
 import city.happening.happening.R;
+import city.happening.happening.WebActivity;
 
 /**
  * Created by Alex on 6/23/2015.
@@ -52,6 +50,9 @@ public class CustomArrayAdapter extends BaseAdapter {
     GoogleAccountCredential mCredential;
     private Bitmap mBitmap;
     Boolean clicked = false;
+    int startPriceNumLabel;
+    int interestedCount;
+
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     static final int REQUEST_AUTHORIZATION = 1001;
@@ -68,6 +69,7 @@ public class CustomArrayAdapter extends BaseAdapter {
                 mContext, Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff())
                 .setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
+        startPriceNumLabel = 0;
     }
 
     @Override
@@ -89,17 +91,26 @@ public class CustomArrayAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View v;
         ViewHolder holder;
+        Typeface face=Typeface.createFromAsset(mContext.getAssets(),
+                "fonts/OpenSansRegular.ttf");
         if(convertView == null) {
             v = mInflater.inflate(R.layout.item, parent, false);
             holder = new ViewHolder();
             holder.avatar = (ImageView)v.findViewById(R.id.picture);
             holder.name = (TextView)v.findViewById(R.id.helloText);
+            holder.name.setTypeface(face);
             holder.hashTag = (TextView)v.findViewById(R.id.hashTag);
+            holder.hashTag.setTypeface(face);
             holder.location = (TextView)v.findViewById(R.id.descText);
+            holder.location.setTypeface(face);
             holder.time = (TextView)v.findViewById(R.id.eventTime);
+            holder.time.setTypeface(face);
             holder.facebookScroll = (HorizontalListView) v.findViewById(R.id.facebookScroll);
             holder.photoholder = (FrameLayout)v.findViewById(R.id.photoholder);
             holder.calendar = (ImageView)v.findViewById(R.id.calendar);
+            holder.ticketButton = (Button)v.findViewById(R.id.ticketButton);
+            holder.interested = (LinearLayout)v.findViewById(R.id.interestedClick);
+            holder.interestednum = (TextView)v.findViewById(R.id.interestedParties);
             v.setTag(holder);
         } else {
             v = convertView;
@@ -110,13 +121,14 @@ public class CustomArrayAdapter extends BaseAdapter {
         Log.d("ArrayAdapter","friends"+friendsList.size());
         HappFromParse happening = getItem(position);
         if (happening!=null){
+            Log.e("ArrayAdapter","Title"+happening.getTitle());
             holder.avatar.setImageResource(happening.getDrawableResourceId());
             holder.avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
             if(happening.getImage()!=null){
                 Bitmap temp = ImageHelper.getRoundedCornerBitmap(happening.getImage(), 10);
-                ImageHelper helper =  new ImageHelper();
-                Bitmap gradientMap = helper.addGradient(temp);
-                holder.avatar.setImageBitmap(gradientMap);
+               // ImageHelper helper =  new ImageHelper();
+               // Bitmap gradientMap = helper.addGradient(temp);
+                holder.avatar.setImageBitmap(temp);
                 // scaleImage(holder.avatar);
             }
             holder.hashTag.setText(happening.getHash());
@@ -125,18 +137,26 @@ public class CustomArrayAdapter extends BaseAdapter {
             Log.d("Adapter", "date" + happening.get("Date").toString());
             Calendar cal = Calendar.getInstance();
             cal.setTime((Date) happening.get("Date"));
-            holder.time.setText( " " + String.format("%1$ta %1$tb %1$td at %1$tI:%1$tM %1$Tp", cal));
+            holder.time.setText(" " + String.format("%1$ta %1$tb %1$td at %1$tI:%1$tM %1$Tp", cal));
            // holder.time.setText(happening.get("Date").toString());
-
-
-            }
-            if(mParseUser.get("friends")!=null){
-                Log.d("Horz scroll", "" + friendsList.size());
-              //  holder.facebookScroll.setAdapter(new FBScrollAdapter(mContext,friendsList));
+            interestedCount = (int)happening.get("swipesRight");
+            holder.interestednum.setText(""+interestedCount);
 
             }
-
             final HappFromParse tempHap = happening;
+            holder.interested.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (interestedCount!=0) {
+                        Intent i = new Intent(mContext, InterestedActivity.class);
+                        i.putExtra(InterestedActivity.EXTRA_EVENT_ID, tempHap.getObjectId());
+                        mContext.startActivity(i);
+                    }else {
+                        makeToast(mContext,"Be The First to Swipe!!!");
+                    }
+                }
+            });
+
 
             holder.calendar.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -144,40 +164,75 @@ public class CustomArrayAdapter extends BaseAdapter {
 
                     if (clicked==false){
                         clicked = true;
-                        HttpTransport transport = AndroidHttp.newCompatibleTransport();
-                        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-                        mService = new com.google.api.services.calendar.Calendar.Builder(transport, jsonFactory, mCredential)
-                                .setApplicationName("Google Calendar API Android Quickstart")
-                                .build();
-                        Event event = new Event();
-                        event.setSummary("Test Event").setLocation(tempHap.getLocation());
-                        Date startDate = (Date)tempHap.get("Date");
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US);
-                        DateTime startDateTime =new DateTime(startDate);
-                        EventDateTime start = new EventDateTime().setDateTime(startDateTime);
-                        event.setStart(start);
-                        DateTime endDateTime = new DateTime(((Date)tempHap.get("EndTime")));
-                        EventDateTime end = new EventDateTime().setDateTime(endDateTime);
-                        event.setEnd(end);
-                        String calendarId = "primary";
-                        try {
-                            event = mService.events().insert(calendarId, event).execute();
-                            makeToast(mContext,"Saved to your calendar!");
-                        }catch (Exception e){
 
-                        }
+                        Calendar beginTime = Calendar.getInstance();
+                        Date startDate = (Date)tempHap.get("Date");
+                        beginTime.setTime(startDate);
+                        Calendar endTime = Calendar.getInstance();
+                        endTime.setTime((Date)tempHap.get("EndTime"));
+                        Intent intent = new Intent(Intent.ACTION_INSERT)
+                                .setData(CalendarContract.Events.CONTENT_URI)
+                                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
+                                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+                                .putExtra(CalendarContract.Events.TITLE, tempHap.getTitle())
+                                .putExtra(CalendarContract.Events.EVENT_LOCATION, tempHap.getLocation())
+                                .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
+                        mContext.startActivity(intent);
 
                     }else {
                         makeToast(mContext,"Already Saved it!");
 
                     }
 
-                   //Intent i = new Intent(mContext, MainActivity.class);
+                   //Intent i = new Intent(mContext, CalendarUseQuestion.class);
                     //mContext.startActivity(i);
                 }
             });
 
+        String ticketLink = (String)tempHap.get("TicketLink");
+        String url = (String)tempHap.get("URL");
+        if (happening.get("lowest_price")!=null){
 
+            startPriceNumLabel = 0;
+            startPriceNumLabel =(int) happening.get("lowest_price");
+        }
+
+        if (ticketLink!=null&&(!ticketLink.equals("")||!ticketLink.equals("$0"))&&startPriceNumLabel!=0){
+            if (ticketLink.contains("seatgeek.com")){
+                if (startPriceNumLabel>=0){
+                    String startingString = "GetTickets - Starting at "+startPriceNumLabel ;
+                    holder.ticketButton.setText(startingString);
+
+
+
+                }
+            } else if (ticketLink.contains("facebook.com")){
+                holder.ticketButton.setText("RSVP TO FACEBOOK EVENT");
+
+            }else if (ticketLink.contains("meetup.com")){
+                holder.ticketButton.setText("RSVP ON MEETUP.COM");
+
+            }else if(((boolean)tempHap.get("isFreeEvent"))){
+                holder.ticketButton.setText("THIS EVENT IS FREE");
+
+            }
+        }else if (url!=null &&(!url.equals("")||(!url.equals("$0")))){
+            holder.ticketButton.setText("MORE INFO ON WEBSITE");
+        }else {
+            holder.ticketButton.setVisibility(View.GONE);
+        }
+        final String ticketLinkFinal =ticketLink;
+        holder.ticketButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ticketLinkFinal!=null){
+                    Intent i = new Intent(mContext, WebActivity.class);
+                    i.putExtra(WebActivity.EXTRA_URL_ID,ticketLinkFinal);
+                    mContext.startActivity(i);
+
+                }
+            }
+        });
 
 
         return v;
@@ -188,9 +243,10 @@ public class CustomArrayAdapter extends BaseAdapter {
 
     private class ViewHolder {
         public ImageView avatar,calendar;
-        public TextView name, location,hashTag,time;
-        //public LinearLayout facebookScroll;
+        public TextView name, location,hashTag,time,interestednum;
+        public LinearLayout interested;
         public FrameLayout photoholder;
+        public Button ticketButton;
         public HorizontalListView facebookScroll;
 
     }
@@ -205,6 +261,7 @@ public class CustomArrayAdapter extends BaseAdapter {
 
         return tempList;
     }
+
 
 
 

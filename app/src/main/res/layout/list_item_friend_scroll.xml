@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/friendPic"
 
-        >
+        android:layout_marginLeft="5dp" android:layout_marginRight="5dp">
 
     </com.facebook.login.widget.ProfilePictureView>
     <TextView android:layout_width="wrap_content"
@@ -16,5 +16,5 @@
         android:id="@+id/friendname"
               android:text="userName"
               android:textColor="#FFFFFF"
-        />
+              android:layout_gravity="center_horizontal"/>
 </LinearLayout>

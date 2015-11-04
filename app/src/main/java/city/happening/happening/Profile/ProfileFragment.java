@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.facebook.login.widget.ProfilePictureView;
-
 import city.happening.happening.R;
 
 /**
@@ -57,8 +55,8 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        ProfilePictureView pictureView =(ProfilePictureView) v.findViewById(R.id.userPicture);
-        pictureView.setProfileId(mFaceBookId);
+       // ProfilePictureView pictureView =(ProfilePictureView) v.findViewById(R.id.userPicture);
+       // pictureView.setProfileId(mFaceBookId);
 
         manager = getChildFragmentManager();
         Fragment fragment = manager.findFragmentById(R.id.fragmentContainer);
@@ -108,7 +106,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 friendsIsCurr = true;
-                eventsIsCurr = false;
+                 eventsIsCurr = false;
 
                 String profileId = mParseID;//(String) getActivity().getIntent().getSerializableExtra(FriendsList.EXTRA_PROFILE_ID);
                 String fbid = mFaceBookId;//(String) getActivity().getIntent().getSerializableExtra(FriendsList.EXTRA_PROFILE_ID_FB);

@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 import city.happening.happening.Cards.CardFrag;
 import city.happening.happening.R;
-import city.happening.happening.SettingsActivity;
+import city.happening.happening.SettingsNonDialog;
 
 public class Tab1Container extends BaseContainerFragment {
 
@@ -49,7 +49,7 @@ public class Tab1Container extends BaseContainerFragment {
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.action_settings:
-                Intent i = new Intent(getActivity(),SettingsActivity.class);
+                Intent i = new Intent(getActivity(),SettingsNonDialog.class);
                 startActivity(i);
                 return true;
             default:

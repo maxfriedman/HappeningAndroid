@@ -8,6 +8,13 @@
         <attr name="title_bar_background" format="reference" />
         <attr name="done_button_background" format="reference" />
     </declare-styleable>
+    <declare-styleable name="CardContainer">
+        <attr name="android:gravity"/>
+        <attr name="orientation" format="enum">
+            <enum name="ordered" value="0"/>
+            <enum name="disordered" value="1"/>
+        </attr>
+    </declare-styleable>
     <declare-styleable name="SwipeFlingAdapterView">
         <attr name="SwipeFlingStyle" format="reference"/>
         <attr name="rotation_degrees" format="float"/>

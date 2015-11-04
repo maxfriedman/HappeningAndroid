@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:button="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/containerEventFrag"
     >
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:orientation="vertical"
@@ -15,10 +17,17 @@
                      android:layout_height="wrap_content">
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="175dp"
+                android:layout_height="215dp"
+
 
                 android:id="@+id/eventImage"
                 android:scaleType="centerCrop"/>
+            <View android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_gravity="top|center"
+                  android:background="@drawable/gradient_cards"
+                />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -28,6 +37,25 @@
 
 
         </FrameLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="People Interested in the Event: "
+            />
+        <city.happening.happening.HorizontalListView
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:id="@+id/friendScroll"
+            android:layout_margin="10dp"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tickets"
+            android:id="@+id/ticketButton"
+            android:elevation="0dp"
+            android:background="@color/lighter_blue"
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -47,39 +75,61 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
+
         <com.usebutton.sdk.ButtonDropin
-            xmlns:button="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/main_dropin"
-            android:layout_height="60dp"
-            button:btn_buttonId="test-placement-android"
-            button:btn_backgroundColor="#4E595D"
-            button:btn_textColor="#fff"
-            button:btn_iconSize="15dp"
-            button:btn_font="Lobster-Regular.ttf"
-            />
+
+            button:btn_buttonId="btn-6cbbc194bb40bfca"
+           />
+
         <LinearLayout android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:orientation="horizontal"
-                      android:layout_gravity="center_horizontal">
+                      android:layout_gravity="center_horizontal"
+                      android:background="@color/grey"
+            >
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="interested"
-                android:id="@+id/interestedButton" android:layout_gravity="center_horizontal"/>
+                android:text="@string/Interested"
+                android:id="@+id/interestedButton" android:layout_gravity="center_horizontal"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_weight="1"
+                />
+
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/darker_blue"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/going"
+                android:id="@+id/goingButton"
+                android:layout_weight="1"
+                style="?android:attr/borderlessButtonStyle"
+
+
+                />
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/darker_blue"
+                />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="going"
-                android:id="@+id/goingButton"/>
+                android:text="@string/Not_interested"
+                android:id="@+id/notInterestedButton"
+                android:layout_weight="1"
+                style="?android:attr/borderlessButtonStyle"
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Not Interested"
-                android:id="@+id/notInterestedButton"/>
+                />
 
 
         </LinearLayout>

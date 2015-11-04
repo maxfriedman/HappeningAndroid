@@ -6,8 +6,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 
-import java.util.UUID;
-
 /**
  * Created by Alex on 6/24/2015.
  */
@@ -20,7 +18,8 @@ public class EventActivity extends FragmentActivity {
         Fragment fragment = manager.findFragmentById(R.id.fragmentContainer);
         if (fragment == null) {
             String eventId = (String)getIntent().getSerializableExtra(EventFragment.EXTRA_EVENT_ID);
-            fragment =EventFragment.newInstance(eventId);
+            boolean eventBool = (boolean)getIntent().getSerializableExtra(EventFragment.EXTRA_EVENT_BOOL);
+            fragment =EventFragment.newInstance(eventId,eventBool);
             manager.beginTransaction().add(R.id.fragmentContainer, fragment).commit();
 
         }

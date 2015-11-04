@@ -4,39 +4,51 @@
     xmlns:facebook="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:id="@+id/scrollView"
     >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
 
-<com.facebook.login.widget.ProfilePictureView
-    android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:id="@+id/userPicture"
+     <!--   <com.facebook.login.widget.ProfilePictureView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/userPicture"
 
-    />
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="wrap_content">
+            />-->
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content">
 
-        <Button
-            android:layout_width="wrap_content"
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/EventsButton"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/FriendsButton"
+                />
+
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fragmentContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/EventsButton"
-            />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/FriendsButton"
             />
 
 
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/fragmentContainer"
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1" />
+
+
 
 
 </LinearLayout>
+

@@ -4,15 +4,17 @@ package city.happening.happening.Login;
  * Created by Alex on 8/13/2015.
  */
 
-import android.support.v4.app.DialogFragment;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.facebook.AccessToken;
@@ -29,8 +31,10 @@ import com.parse.LogInCallback;
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 import org.json.JSONArray;
@@ -44,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 
 import city.happening.happening.CitySelector;
+import city.happening.happening.LargeContainer.MyTabActivity;
 import city.happening.happening.ProgressDialogFragment;
 import city.happening.happening.R;
 
@@ -64,13 +69,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (AccessToken.getCurrentAccessToken()!=null&&!AccessToken.getCurrentAccessToken().isExpired()&&Profile.getCurrentProfile()!=null){
-           // mBtnFb.setVisibility(View.GONE);
-           // mVideoView.setVisibility(View.GONE);
-            mDialog = new ProgressDialogFragment().newInstance("Processing Your Info!!");
-            mDialog.show(getSupportFragmentManager(), "Processing Your Info!!");
-            getUserDetailsFromFB();
-        }
+
 
         setContentView(R.layout.activity_login);
 
@@ -79,6 +78,17 @@ public class LoginActivity extends AppCompatActivity {
         String fileName = "android.resource://" + getPackageName() + "/" + R.raw.happening_intro_vid;
         mVideoView.setVideoURI(Uri.parse(fileName));
         mVideoView.start();
+        if (AccessToken.getCurrentAccessToken()!=null&&!AccessToken.getCurrentAccessToken().isExpired()&&Profile.getCurrentProfile()!=null&&ParseUser.getCurrentUser()!=null&&!ParseUser.getCurrentUser().isNew()){
+            Intent i = new Intent(getApplicationContext(), MyTabActivity.class);
+            startActivity(i);
+            finish();
+        }
+        else if (AccessToken.getCurrentAccessToken()!=null&&!AccessToken.getCurrentAccessToken().isExpired()&&Profile.getCurrentProfile()!=null&&ParseUser.getCurrentUser()!=null){
+            mDialog = new ProgressDialogFragment().newInstance("Processing Your Info!!");
+            mDialog.show(getSupportFragmentManager(), "Processing Your Info!!");
+
+            getUserDetailsFromFB();
+        }
 
 
         mCallBackManager = CallbackManager.Factory.create();
@@ -89,8 +99,6 @@ public class LoginActivity extends AppCompatActivity {
         mBtnFb.registerCallback(mCallBackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                mBtnFb.setVisibility(View.GONE);
-                mVideoView.setVisibility(View.GONE);
                 mDialog = new ProgressDialogFragment().newInstance("Processing Your Info!");
                 mDialog.show(getSupportFragmentManager(), "Processing Your Info!!");
                 getUserDetailsFromFB();
@@ -99,11 +107,13 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onCancel() {
+                makeToast(getApplicationContext(),"Your Login Attempt was Cancelled");
                 Log.d("Main", "Oncancel");
             }
 
             @Override
             public void onError(FacebookException e) {
+                makeToast(getApplicationContext(),"Oh No a login Error");
                 Log.d("Main", "onError" + e);
             }
         });
@@ -113,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void handleFBData(JSONObject user,boolean newUser, ArrayList<Map<String,String>>friends) {
         parseUser = new ParseUser();
-        Log.e("LoginActivity",""+friends.get(0).get("id"));
+        Log.e("LoginActivity", "" + friends.get(0).get("id"));
         try{
             parseUser.setUsername(user.get("email").toString());
             if (user.get("email") != null) parseUser.setEmail(user.get("email").toString());
@@ -179,6 +189,9 @@ public class LoginActivity extends AppCompatActivity {
             parseLogin(parseUser);
         }
 
+    }
+    static void makeToast(Context ctx, String s){
+        Toast.makeText(ctx, s, Toast.LENGTH_SHORT).show();
     }
     private void parseLogin(ParseUser user){
         user.logInInBackground(user.getEmail(), user.get("link").toString(), new LogInCallback() {
@@ -252,6 +265,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getUserDetailsFromFB() {
+        mBtnFb.setVisibility(View.GONE);
+        mVideoView.setVisibility(View.GONE);
+        setContentView(R.layout.activity_splashscreen);
+
 
         GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
             @Override
@@ -279,12 +296,12 @@ public class LoginActivity extends AppCompatActivity {
 
     public void setDefualtsForUser(ParseUser user){
         Boolean notisEnabled = true;//needs to say whether push notifications are enabled
-        ParseInstallation currentInstallation = new ParseInstallation();
+        ParseInstallation currentInstallation = ParseInstallation.getCurrentInstallation();
         Log.e("LoginActivity",""+user.get("friends"));
-        Log.e("LoginActivity",""+mFriends.get(0).get("parseId"));
+        Log.e("LoginActivity", "" + mFriends.get(0).get("parseId"));
         user.put("friends", mFriends);
 
-        /*
+
 
         ParsePush.subscribeInBackground("global");
         ParsePush.subscribeInBackground("reminders");
@@ -295,7 +312,17 @@ public class LoginActivity extends AppCompatActivity {
         ParsePush.subscribeInBackground("bestFriends");
         currentInstallation.put("userID", user.getObjectId());
         currentInstallation.put("enabled", notisEnabled);
-        currentInstallation.saveEventually(); */
+        currentInstallation.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e==null){
+                    Log.e("currentInstall","saved");
+                }else{
+                    Log.e("currentInstall","error "+e);
+
+                }
+            }
+        });
 
         Map<String,String> defaults = new HashMap<>();
         defaults.put("refreshData","no");
@@ -332,7 +359,13 @@ public class LoginActivity extends AppCompatActivity {
         Log.d("Parse User", "" + user.get("categories") + user.get("userLocTitle"));
         user.pinInBackground();
         user.saveEventually();
-        Intent i = new Intent(this, CitySelector.class);
+
+        Intent i;
+        if (((String)user.get("userLocTitle")).equals("")){
+             i = new Intent(this, CitySelector.class);
+        }else {
+             i = new Intent(this, MyTabActivity.class);
+        }
         startActivity(i);
         finish();
 

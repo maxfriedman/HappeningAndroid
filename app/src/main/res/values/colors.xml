@@ -2,5 +2,9 @@
 <resources>
     <color name="card_bg">#EBEBEB</color>
     <color name="card_outline">#D0D0CE</color>
-
+    <color name="lighter_blue">#00B0F2</color>
+    <color name="darker_blue">#00B9F5</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="grey">#D3D3D3</color>
 </resources>

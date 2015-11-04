@@ -14,23 +14,19 @@
 
     <LinearLayout
         android:gravity="center_horizontal"
-        android:layout_height="200dp"
-        android:layout_width="300dp"
+        android:layout_height="220dp"
+        android:layout_width="match_parent"
         android:orientation="vertical"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
         android:background="@drawable/bg_selector"
         android:id="@+id/eventCard"
-
-        android:layout_weight="0.11">
+        android:layout_weight="0.11" android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" android:layout_margin="10dp">
     <FrameLayout android:layout_width="match_parent"
                  android:layout_height="match_parent"
-                 android:layout_weight="0"
                  android:layout_gravity="center_horizontal"
-                 android:background="@drawable/bg_selector"
                  android:foregroundGravity="center_horizontal"
+                 android:background="@drawable/bg_selector"
                  android:id="@+id/listItemLayout"
         >
 
@@ -39,8 +35,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="top|center"
             android:id="@+id/eventImage"
-            android:src="@drawable/happy_hour"
-            android:background="@drawable/bg_selector"
+            android:background="@drawable/gradient_cards"
             android:scaleType="centerCrop"
             />
         <View android:layout_width="match_parent"
@@ -48,8 +43,9 @@
               android:layout_gravity="top|center"
               android:background="@drawable/gradient_cards"/>
 
-        <LinearLayout android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             >
             <TextView
@@ -70,7 +66,7 @@
                 android:layout_marginLeft="10dp"
 
                 android:text="TempTime" android:layout_marginTop="5dp"/>
-            <View android:layout_width="300dp" android:layout_height="5dp"
+            <View android:layout_width="match_parent" android:layout_height="5dp"
                 android:background="#FFFFFF"
                   android:layout_marginTop="5dp"/>
             <TextView
@@ -84,7 +80,7 @@
                 android:layout_marginLeft="10dp"/>
             <city.happening.happening.HorizontalListView
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="70dp"
                 android:id="@+id/facebookScroll"
                 android:layout_gravity="bottom" android:layout_margin="10dp">
 

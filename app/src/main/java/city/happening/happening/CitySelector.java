@@ -15,8 +15,6 @@ import android.widget.TextView;
 
 import com.parse.ParseUser;
 
-import city.happening.happening.LargeContainer.MyTabActivity;
-
 /**
  * Created by Alex on 9/24/2015.
  */
@@ -82,7 +80,7 @@ public class CitySelector extends Activity {
                 @Override
                 public void onClick(View v) {
                    mParseUser.put("userLocTitle",mCities[tempPosition]);
-                    Intent i = new Intent(mContext, MyTabActivity.class);
+                    Intent i = new Intent(mContext, CalendarUseQuestion.class);
                     startActivity(i);
                 }
             });

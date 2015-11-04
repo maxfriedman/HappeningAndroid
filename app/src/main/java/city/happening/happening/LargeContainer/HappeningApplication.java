@@ -30,16 +30,18 @@ public class HappeningApplication extends Application {
         Parse.enableLocalDatastore(getApplicationContext());
         Parse.initialize(this, "olSntgsT5uY3ZZbJtnjNz8yvol4CxwmArTsbkCZa", "xwmrITvs8UaFBNfBupzXcUa6HN3sU515xp1TsGxu");
         ParseObject.registerSubclass(HappFromParse.class);
+        //ParseInstallation.getCurrentInstallation().saveInBackground();
 
-        PushService.setDefaultPushCallback(this, HappeningMain.class);
+        PushService.setDefaultPushCallback(this, MyTabActivity.class);
 
-        Button.getButton(this).start();
+
         if (BuildConfig.DEBUG) {
             // Enable debug logging on debug builds
             // adb logcat ButtonSDK:D *:S
             Button.enableDebugLogging();
         }
 
+        Button.getButton(this).start();
 
 
 

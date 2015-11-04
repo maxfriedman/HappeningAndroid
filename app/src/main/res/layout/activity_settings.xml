@@ -41,7 +41,7 @@
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tommorrow"
+            android:text="Tomorrow"
             android:id="@+id/tomorrowButton" android:checked="false"/>
         <RadioButton
             android:layout_width="wrap_content"

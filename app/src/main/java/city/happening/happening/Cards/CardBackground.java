@@ -15,6 +15,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import city.happening.happening.HappFromParse;
+
 /**
  * Created by Alex on 7/24/2015.
  */
@@ -36,7 +38,6 @@ public class CardBackground{
 
     public ParseQuery getQuery(int x,Context context, boolean limit){
         shouldLimit = limit;
-
 
         Log.e(TAG,"getQuery");
         ParseQuery eventQuery;
@@ -63,7 +64,6 @@ public class CardBackground{
                 Date  endDayz = new Date(rightNow.getTimeInMillis());
                 eventQuery.whereLessThan("Date",endDayz);//need to create an end of day variable
             }
-
         }else if(mParseUser.get("time").equals("tomorrow")){
             long startOfDay = 86400000 - rightNow.getTimeInMillis();
             int addAmt = (int) startOfDay;
@@ -117,9 +117,9 @@ public class CardBackground{
 
 
         ParseQuery<ParseObject> weightedQuery = ParseQuery.getQuery("Event");
-        weightedQuery.whereGreaterThan("globalWeight", 0);
+        weightedQuery.whereGreaterThan("globalWeight",-1);
         weightedQuery.whereGreaterThan("EndTime", today);
-        weightedQuery.whereNotEqualTo("private",true);//look for the privacy strings line 194-212 pull from github
+        weightedQuery.whereEqualTo("privacy","public");//look for the privacy strings line 194-212 pull from github
 
         List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
         queries.add(weightedQuery);
@@ -174,9 +174,11 @@ public class CardBackground{
         theCityLoc.setLatitude(citLoc.latitude);
         Location theUserLoc = new Location("");
         float distance;
-        if(mLastLocation!=null){
-             theUserLoc= mLastLocation;
-            Log.e(TAG,"Location"+mLastLocation.getLongitude());
+        if(userLocation!=null){
+
+             theUserLoc.setLongitude(userLocation.getLongitude());
+            theUserLoc.setLatitude(userLocation.getLatitude());
+           // Log.e(TAG,"Location"+mLastLocation.getLongitude());
             distance =theUserLoc.distanceTo(theCityLoc);
         }else {
             theUserLoc.setLatitude(38.907192);
@@ -213,17 +215,40 @@ public class CardBackground{
         //finalQuery.whereWithinMiles("GeoLoc", userLocation, 50);
 
 
-
+        finalQuery.addDescendingOrder("globalWeight");
         finalQuery.addDescendingOrder("weight");
         finalQuery.addDescendingOrder("swipesRight");
         finalQuery.addAscendingOrder("Date");
 
-        finalQuery.setLimit(x);
+        finalQuery.setLimit(10);
+        /*finalQuery.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List list, ParseException e) {
+                if (list.size() == 0 && shouldLimit) {
+
+                } else if (list.size() == 0 && !shouldLimit) {
+
+                }
+                for (int i = 0; i < list.size(); i++) {
+
+                }
+                loadCards(list);
+            }
+
+        });*/
 
         return finalQuery;
     }
 
+private void loadCards(List list){
+    ArrayList<ParseObject> cardsList =(ArrayList<ParseObject>) list;
+    Log.e(TAG,"size "+cardsList.size());
+    for (int i=0;i<cardsList.size();i++){
+        HappFromParse h = (HappFromParse)cardsList.get(i);
 
+    }
+
+}
 
 
 

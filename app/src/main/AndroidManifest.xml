@@ -10,9 +10,16 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="ANDROID.PERMISSION.WRITE_CALENDAR"/>
+        <!--
+      IMPORTANT: Change "com.parse.starter.permission.C2D_MESSAGE" in the lines below
+      to match your app's package name + ".permission.C2D_MESSAGE".
+    -->
+    <permission android:protectionLevel="signature"
+                android:name="city.happening.happening.permission.C2D_MESSAGE" />
+    <uses-permission android:name="city.happening.happening.permission.C2D_MESSAGE" />
 
     <application android:allowBackup="true"
                  android:label="@string/app_name"
@@ -29,6 +36,8 @@
             android:value="@integer/google_play_services_version" />
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <meta-data android:name="com.usebutton.applicationid" android:value="app-070dce57d47ec28b"/>
+        <activity android:name=".WebActivity"/>
+        <activity android:name=".SettingsNonDialog"/>
         <activity android:name=".Login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -37,13 +46,16 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".MainActivity"
+        <activity android:name=".InterestedActivity"/>
+        <activity android:name=".CalendarUseQuestion"
                   android:label="Calendar thing"/>
 
         <activity android:name=".LargeContainer.MyTabActivity"
                   android:label="@string/app_name"
-                  android:screenOrientation="portrait"
-            />
+                  android:screenOrientation="portrait">
+
+
+            </activity>
 
         <activity android:name=".Profile.ProfileActivity"
                   android:label="@string/app_name">
@@ -56,9 +68,6 @@
                   >
 
         </activity>
-        <activity android:name=".Profile.FriendProfileActivity"
-                  android:label="@string/app_name"
-            />
         <activity
             android:name=".EventActivity"
             android:label="@string/app_name" >
@@ -76,6 +85,29 @@
                   android:exported="false">
             <intent-filter>
                 <action android:name="city.happening.happening.Cards.ACTION_LOCATION"/>
+            </intent-filter>
+        </receiver>
+
+        <service android:name="com.parse.PushService" />
+        <receiver android:name=".CustomParseBroadcastReciever"
+                  android:exported="false">
+            <intent-filter>
+                <action android:name="com.parse.push.intent.RECEIVE" />
+                <action android:name="com.parse.push.intent.DELETE" />
+                <action android:name="com.parse.push.intent.OPEN"/>
+
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.parse.GcmBroadcastReceiver"
+                  android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <!--
+                  IMPORTANT: Change "com.parse.starter" to match your app's package name.
+                -->
+                <category android:name="city.happening.happening" />
             </intent-filter>
         </receiver>
 

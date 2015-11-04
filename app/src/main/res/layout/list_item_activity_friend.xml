@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:background="@color/white"
+    >
           <com.facebook.login.widget.ProfilePictureView
         android:layout_width="81dp"
         android:layout_height="85dp"
@@ -15,17 +17,31 @@
         android:layout_height="wrap_content"
         android:id="@+id/eventContainer"
         >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/userText"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:text="User is interested in"
-            />
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_alignParentTop="true"
+                      android:layout_alignParentStart="true"
+                      android:id="@+id/textHolder"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/userText"
+
+                android:textStyle="bold" android:typeface="sans"/>
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_alignRight="@+id/userText"
+                      android:id="@+id/interestedIn"
+                      android:text="@string/interestedIn"
+                      android:layout_alignParentTop="true"
+                />
+
+        </LinearLayout>
+
         <ImageView android:layout_width="50dp"
                    android:layout_height="50dp"
-                   android:scaleType="fitXY"
+                   android:scaleType="centerCrop"
                    android:id="@+id/activityImage"
                    android:src="@drawable/happy_hour"
 
@@ -36,7 +52,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/activityTitle"
             android:text="Event Text"
-            android:layout_below="@+id/userText" android:layout_alignStart="@+id/activityDate"
+            android:layout_below="@+id/textHolder" android:layout_alignStart="@+id/activityDate"
             android:layout_marginTop="5dp"/>
         <TextView
             android:layout_width="match_parent"
@@ -44,11 +60,8 @@
             android:id="@+id/activityDate"
             android:text="Today's Date"
             android:layout_below="@+id/activityTitle" android:layout_toEndOf="@+id/activityImage"
-            android:layout_marginStart="9dp" android:layout_marginTop="5dp"/>
-        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:src="@drawable/arrow1"
-                   android:layout_alignBottom="@+id/activityDate"
-                   android:layout_alignEnd="@+id/activityTitle"/>
+            android:layout_marginStart="9dp" android:layout_marginTop="5dp"
+            android:textStyle="italic"/>
 
 
     </RelativeLayout>
